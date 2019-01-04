@@ -4,6 +4,29 @@ import minimatch from "minimatch";
 import toAbsGlob from "to-absolute-glob";
 import { resolve } from "path";
 
+const debounce = (f: faqtor.IFactor, interval: number): faqtor.IFactor => {
+    let lastModif: number = null;
+    let tout: any = null;
+    const origRun = f.run.bind(f);
+    const run = async (argv?: string[]): Promise<Error> => {
+        const now = Date.now();
+        if (lastModif !== null && now - lastModif >= interval) {
+            lastModif = now;
+            return await origRun(argv);
+        } else {
+            if (lastModif === null) lastModif = now;
+            return await new Promise<Error>(
+                (resolve) => {
+                    if (tout !== null) clearTimeout(tout);
+                    tout = setTimeout(async () => resolve(await run(argv)), interval);
+                }
+            );
+        }
+    }
+    f.run = run;
+    return f;
+}
+
 const norm = (d: faqtor.Domain): string[] => {
     const dom = !d ? [] : typeof d === "string" ? [d] : d;
     if (dom.length < 2) { return dom; }
@@ -42,7 +65,7 @@ export const watch = (x: faqtor.IFactor | chokidar.WatchOptions, ...tasks: faqto
 
     const run = async (): Promise<Error> => {
         for (let i = 0; i < tasks.length; i++) {
-            const f = tasks[i];
+            const f = debounce(tasks[i], 500);
             const d = norm(f.Input);
             if (!d.length) { return new ErrorEmptyInput(i); }
             for (let g of d) {
