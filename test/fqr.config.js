@@ -1,8 +1,10 @@
 const { cmd } = require("faqtor");
+const { watch } = require("../dist/index");
 
-const testFile = "./test.js";
-const testOutput = "./test.min.js";
+const testInput = "./test.js";
+
+const echo = cmd("echo OOOOOK").factor(testInput);
 
 module.exports = {
-    clean: cmd(`rimraf ${testOutput}`).factor(testOutput)
+    watch: watch(echo)
 }
