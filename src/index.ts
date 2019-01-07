@@ -14,7 +14,7 @@ const debounce = (f: faqtor.IFactor, interval: number): faqtor.IFactor => {
             lastModif = now;
             return await origRun(argv);
         } else {
-            if (lastModif === null) lastModif = now;
+            lastModif = now;
             return await new Promise<Error>(
                 (resolve) => {
                     if (tout !== null) clearTimeout(tout);
