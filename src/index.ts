@@ -47,25 +47,24 @@ type FactorsTab = {
     [g in string]: faqtor.IFactor[];
 }
 
-export const watch = (x: faqtor.IFactor | chokidar.WatchOptions, ...tasks: faqtor.IFactor[]): faqtor.IFactor => {
-    const isFactor = (y): y is faqtor.IFactor => 
-        !!(y as faqtor.IFactor).run &&
-        typeof (y as faqtor.IFactor).run === "function";
+const defaultWatchOptions: chokidar.WatchOptions = {
+    ignoreInitial: true,
+    cwd: ".",
+}
 
-    let watchOptions: chokidar.WatchOptions = {
-        ignoreInitial: true,
-        cwd: ".",
-    }
-    if (isFactor(x)) {
-        tasks = [x].concat(tasks);
-    } else {
-        watchOptions = x;
-    }
+export const watch = (tsk: faqtor.IFactor | faqtor.IFactor[], watchOptions: chokidar.WatchOptions = defaultWatchOptions, debounceInterval: number = 500): faqtor.IFactor => {
     const tab: FactorsTab = {};
+    let tasks: faqtor.IFactor[];
 
-    const run = async (): Promise<Error> => {
+    if (!Array.isArray(tsk)) {
+        tasks = [tsk];
+    } else {
+        tasks = tsk as faqtor.IFactor[];
+    }
+
+    const run = async (argv?: string[]): Promise<Error> => {
         for (let i = 0; i < tasks.length; i++) {
-            const f = debounce(tasks[i], 500);
+            const f = debounce(tasks[i], debounceInterval);
             const d = norm(f.Input);
             if (!d.length) { return new ErrorEmptyInput(i); }
             for (let g of d) {
@@ -85,7 +84,7 @@ export const watch = (x: faqtor.IFactor | chokidar.WatchOptions, ...tasks: faqto
             for (const g in tab) {
                 if (minimatch(p, g)) {
                     for (const f of tab[g]) {
-                        const e = await f.run();
+                        const e = await f.run(argv);
                         if (e) {
                             console.error(e);
                         }
