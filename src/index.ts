@@ -47,12 +47,12 @@ type FactorsTab = {
     [g in string]: faqtor.IFactor[];
 }
 
-const defaultWatchOptions: chokidar.WatchOptions = {
+export const defaultWatchOptions: chokidar.WatchOptions = {
     ignoreInitial: true,
     cwd: ".",
 }
 
-export const watch = (tsk: faqtor.IFactor | faqtor.IFactor[], watchOptions: chokidar.WatchOptions = defaultWatchOptions, debounceInterval: number = 500): faqtor.IFactor => {
+export const watch = (tsk: faqtor.IFactor | faqtor.IFactor[], debounceInterval: number = 500, watchOptions: chokidar.WatchOptions = defaultWatchOptions): faqtor.IFactor => {
     const tab: FactorsTab = {};
     let tasks: faqtor.IFactor[];
 
