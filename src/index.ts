@@ -85,7 +85,7 @@ export const watch = (tsk: faqtor.IFactor | faqtor.IFactor[], watchOptions: chok
                 if (minimatch(p, g)) {
                     for (const f of tab[g]) {
                         const e = await f.run(argv);
-                        if (e) {
+                        if (e && !faqtor.isReported(e)) {
                             console.error(e);
                         }
                     }
