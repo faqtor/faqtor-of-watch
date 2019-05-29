@@ -9,7 +9,7 @@ const cjsOutput = `${dist}/index.js`;
 const lockFile = "./build/dist-lock.json";
 
 const tsc = (project) => cmd(`tsc -p ${project}`);
-const rename = (a, b) => cmd(`mv ${a} ${b}`);
+const rename = (a, b) => cmd(`shx mv ${a} ${b}`);
 
 const clean = cmd(`rimraf ${dist}`)
     .factor(dist);

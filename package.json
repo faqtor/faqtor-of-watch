@@ -1,6 +1,6 @@
 {
   "name": "faqtor-of-watch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Faqtor plugin for watching files and running corresponding tasks",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   },
   "author": "Osman Bineev",
   "devDependencies": {
-    "cash-mv": "^0.2.0",
+    "shx": "^0.3.2",
     "faqtor": "^0.1.7",
     "faqtor-of-publish": "0.0.1",
     "fqr": "0.0.6",
